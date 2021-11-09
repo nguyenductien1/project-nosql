@@ -3,7 +3,10 @@ package qengine.program;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Statement;
+import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.rio.helpers.AbstractRDFHandler;
 
 
@@ -20,21 +23,50 @@ import org.eclipse.rdf4j.rio.helpers.AbstractRDFHandler;
  */
 public final class MainRDFHandler extends AbstractRDFHandler {
 	int i = 0;
-	Map<String, Integer> dict = new HashMap<>();
+	Map<Integer,String> dict = new HashMap<>();
 	@Override
 	public void handleStatement(Statement st) {
-		if (dict.containsKey(st.getSubject().toString())) {
-			System.out.print("contenu déjà existé \n" );
+		
+		tripleToDict(st);
+		System.out.println("-----------------------------------------");
+		
+		
+	};
+	
+	public Map<Integer, String> tripleToDict (Statement st){
+		
+		Resource subject = st.getSubject();
+		Resource predicate = st.getPredicate();
+		Value object =  st.getObject();
+		if (dict.containsValue(subject.toString())) {
+			System.out.println("Déjà");
 		}
 		else {
-			dict.put(st.getSubject().toString(), i);
+			dict.put(i, subject.toString());
 			i++;
+			System.out.println("key: " + i + " value: " + subject.toString());
 		}
-		Set<Map.Entry<String, Integer>> objects = dict.entrySet();
-		for (Map.Entry<String, Integer> d: objects) {
-			String name = d.getKey();
-			Integer value = d.getValue();
-			System.out.print("name: "+ name+ " value: " + value + "\n");
+		
+		if (dict.containsValue(predicate.toString())) {
+			System.out.println("Déjà");
 		}
-	};
+		else {
+			dict.put(i, predicate.toString());
+			i++;
+			System.out.println("key: " + i + " value: " + predicate.toString());
+		}
+		
+		if (dict.containsValue(object.toString())) {
+			System.out.println("Déjà");
+		}
+		else {
+			dict.put(i, object.toString());
+			i++;
+			System.out.println("key: " + i + " value: " + object.toString());
+		}
+		
+		
+		return dict;
+		
+	}
 }
