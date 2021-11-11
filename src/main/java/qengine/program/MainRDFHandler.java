@@ -1,8 +1,10 @@
 package qengine.program;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
 
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Statement;
@@ -24,49 +26,85 @@ import org.eclipse.rdf4j.rio.helpers.AbstractRDFHandler;
 public final class MainRDFHandler extends AbstractRDFHandler {
 	int i = 0;
 	Map<Integer,String> dict = new HashMap<>();
+	public List<List<String>> SPO = new ArrayList<>();
+	public List<List<String>> SOP = new ArrayList<>();
+	public List<List<String>> PSO = new ArrayList<>();
+	public List<List<String>> OPS = new ArrayList<>();
+	public List<List<String>> POS = new ArrayList<>();
+	public List<List<String>> OSP = new ArrayList<>();
+	
 	@Override
 	public void handleStatement(Statement st) {
 		
 		tripleToDict(st);
-		System.out.println("-----------------------------------------");
+		origanizationIndex(st);
+		
 		
 		
 	};
+	
+	
 	
 	public Map<Integer, String> tripleToDict (Statement st){
 		
 		Resource subject = st.getSubject();
 		Resource predicate = st.getPredicate();
 		Value object =  st.getObject();
-		if (dict.containsValue(subject.toString())) {
-			System.out.println("Déjà");
-		}
-		else {
+		
+		
+		if (!dict.containsValue(subject.toString())) {
 			dict.put(i, subject.toString());
 			i++;
-			System.out.println("key: " + i + " value: " + subject.toString());
 		}
+	
 		
-		if (dict.containsValue(predicate.toString())) {
-			System.out.println("Déjà");
-		}
-		else {
+		if (!dict.containsValue(predicate.toString())) {
 			dict.put(i, predicate.toString());
 			i++;
-			System.out.println("key: " + i + " value: " + predicate.toString());
 		}
-		
-		if (dict.containsValue(object.toString())) {
-			System.out.println("Déjà");
-		}
-		else {
+	
+	
+		if (!dict.containsValue(object.toString())) {
 			dict.put(i, object.toString());
 			i++;
-			System.out.println("key: " + i + " value: " + object.toString());
 		}
-		
+
 		
 		return dict;
 		
+		
 	}
+	public void origanizationIndex(Statement st) {
+		String s = null, p = null, o = null;
+		Resource subject = st.getSubject();
+		Resource predicate = st.getPredicate();
+		Value object =  st.getObject();
+		
+		s = subject.toString();
+		p = predicate.toString();
+		o = object.toString();
+		
+		SPO.add(createList(s, p, o));
+		SOP.add(createList(s, o, p));
+		PSO.add(createList(p, s, o));
+		OPS.add(createList(o, p, s));
+		POS.add(createList(p, o, s));
+		OSP.add(createList(o, s, p));
+
+	}
+	
+	
+	public List<String> createList ( String a, String b, String c){
+		List<String> list = new ArrayList<>();
+		list.add(a);
+		list.add(b);
+		list.add(c);
+		return list;
+		
+	}
+	
+	
+	
+	
+	
 }

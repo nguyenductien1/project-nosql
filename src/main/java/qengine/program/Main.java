@@ -129,16 +129,63 @@ final class Main {
 	 * Traite chaque triple lu dans {@link #dataFile} avec {@link MainRDFHandler}.
 	 */
 	private static void parseData() throws FileNotFoundException, IOException {
-
+		MainRDFHandler rdfHandler = new MainRDFHandler();
 		try (Reader dataReader = new FileReader(dataFile)) {
 			// On va parser des données au format ntriples
 			RDFParser rdfParser = Rio.createParser(RDFFormat.NTRIPLES);
 
 			// On utilise notre implémentation de handler
-			rdfParser.setRDFHandler(new MainRDFHandler());
-
+			rdfParser.setRDFHandler(rdfHandler);
+			
 			// Parsing et traitement de chaque triple par le handler
 			rdfParser.parse(dataReader, baseURI);
+			
 		}
+		// Imprimer le dictionaire
+		System.out.println("Dictionary: ");
+		rdfHandler.dict.entrySet().forEach(entry -> {
+		    System.out.println("key: "+entry.getKey() + " - " + "value: " + entry.getValue());
+		});
+		
+		//Créer un instance de IndexManager
+		IndexManager idx = new IndexManager();
+		idx.setSPO(rdfHandler.SPO, rdfHandler.dict);
+		idx.setSOP(rdfHandler.SOP, rdfHandler.dict);
+		idx.setPSO(rdfHandler.PSO, rdfHandler.dict);
+		idx.setOPS(rdfHandler.OPS, rdfHandler.dict);
+		idx.setPOS(rdfHandler.POS, rdfHandler.dict);
+		idx.setOSP(rdfHandler.OSP, rdfHandler.dict);
+		//Imprimer les index
+		
+		System.out.println("Index SPO: ");
+		for (int i=0; i< idx.getSPO().size(); i++) {
+			System.out.println(idx.getSPO().get(i).toString());
+		}
+		
+		System.out.println("Index SOP: ");
+		for (int i=0; i< rdfHandler.SOP.size(); i++) {
+			System.out.println(idx.getSOP().get(i).toString());
+		}
+		
+		System.out.println("Index PSO: ");
+		for (int i=0; i< idx.getPSO().size(); i++) {
+			System.out.println(idx.getPSO().get(i).toString());
+		}
+		
+		System.out.println("Index OPS: ");
+		for (int i=0; i< idx.getOPS().size(); i++) {
+			System.out.println(idx.getOPS().get(i).toString());
+		}
+		
+		System.out.println("Index POS: ");
+		for (int i=0; i< idx.getPOS().size(); i++) {
+			System.out.println(idx.getPOS().get(i).toString());
+		}
+		
+		System.out.println("Index OSP: ");
+		for (int i=0; i< idx.getOSP().size(); i++) {
+			System.out.println(idx.getOSP().get(i).toString());
+		}
+		
 	}
 }
