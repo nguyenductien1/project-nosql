@@ -74,6 +74,10 @@ public final class MainRDFHandler extends AbstractRDFHandler {
 		
 		
 	}
+	
+	Dictionary instaceDict = new Dictionary();
+	
+	
 	public void origanizationIndex(Statement st) {
 		String s = null, p = null, o = null;
 		Resource subject = st.getSubject();

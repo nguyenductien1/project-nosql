@@ -141,20 +141,29 @@ final class Main {
 			rdfParser.parse(dataReader, baseURI);
 			
 		}
+	
+		
+		//Créer un instace de Dictionary
+		Dictionary instanceDict = new Dictionary();
+		instanceDict.setDict(rdfHandler.dict);
+		
 		// Imprimer le dictionaire
 		System.out.println("Dictionary: ");
-		rdfHandler.dict.entrySet().forEach(entry -> {
+		instanceDict.getDict().entrySet().forEach(entry -> {
 		    System.out.println("key: "+entry.getKey() + " - " + "value: " + entry.getValue());
 		});
 		
+		
+		
 		//Créer un instance de IndexManager
 		IndexManager idx = new IndexManager();
-		idx.setSPO(rdfHandler.SPO, rdfHandler.dict);
-		idx.setSOP(rdfHandler.SOP, rdfHandler.dict);
-		idx.setPSO(rdfHandler.PSO, rdfHandler.dict);
-		idx.setOPS(rdfHandler.OPS, rdfHandler.dict);
-		idx.setPOS(rdfHandler.POS, rdfHandler.dict);
-		idx.setOSP(rdfHandler.OSP, rdfHandler.dict);
+		idx.setSPO(rdfHandler.SPO, instanceDict.getDict());
+		idx.setSOP(rdfHandler.SOP, instanceDict.getDict());
+		idx.setPSO(rdfHandler.PSO, instanceDict.getDict());
+		idx.setOPS(rdfHandler.OPS, instanceDict.getDict());
+		idx.setPOS(rdfHandler.POS, instanceDict.getDict());
+		idx.setOSP(rdfHandler.OSP, instanceDict.getDict());
+		
 		//Imprimer les index
 		
 		System.out.println("Index SPO: ");
@@ -163,7 +172,7 @@ final class Main {
 		}
 		
 		System.out.println("Index SOP: ");
-		for (int i=0; i< rdfHandler.SOP.size(); i++) {
+		for (int i=0; i< idx.getSOP().size(); i++) {
 			System.out.println(idx.getSOP().get(i).toString());
 		}
 		

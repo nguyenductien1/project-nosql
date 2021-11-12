@@ -35,46 +35,46 @@ public class IndexManager {
 
 
 	public List<List<Integer>> getSOP() {
-		return SOP;
+		return this.SOP;
 	}
 
 
 
 	public void setSOP(List<List<String>> sOP, Map<Integer, String> dict) {
 		
-		SOP = addToList(sOP, dict);
+		this.SOP = addToList(sOP, dict);
 	}
 
 
 
 	public List<List<Integer>> getPSO() {
-		return PSO;
+		return this.PSO;
 	}
 
 
 
 	public void setPSO(List<List<String>> pSO, Map<Integer, String> dict) {
 	
-		PSO = addToList(pSO, dict);
+		this.PSO = addToList(pSO, dict);
 	}
 
 
 
 	public List<List<Integer>> getOPS() {
-		return OPS;
+		return this.OPS;
 	}
 
 
 
 	public void setOPS(List<List<String>> oPS, Map<Integer, String> dict) {
 		
-		OPS = addToList(oPS, dict);
+		this.OPS = addToList(oPS, dict);
 	}
 
 
 
 	public List<List<Integer>> getPOS() {
-		return POS;
+		return this.POS;
 	}
 
 
@@ -102,26 +102,31 @@ public class IndexManager {
 		List<List<Integer>> listInteger = new ArrayList<>(); 
 		for (int i = 0; i< idxList.size(); i ++) {
 			List<Integer> list = new ArrayList<>();
-			for (Entry<Integer, String> e : dict.entrySet()) {
-				
-			    if (idxList.get(i).get(0).equals(e.getValue())) {
-			    	list.add(e.getKey());
-			    }
-			    if (idxList.get(i).get(1).equals(e.getValue())) {
-			    	list.add(e.getKey());
-			    }
-			    if (idxList.get(i).get(2).equals(e.getValue())) {
-			    	list.add(e.getKey());
-			    }
-			    
-			}
-		listInteger.add(list); 
+			String k1 = idxList.get(i).get(0);
+			list.add(findKey(k1, dict));
+			
+			String k2 = idxList.get(i).get(1);
+			list.add(findKey(k2, dict));
+			
+			String k3 = idxList.get(i).get(2);
+			list.add(findKey(k3, dict));
+			
+			listInteger.add(list);	
 			
 		}
 		return listInteger;
 	}
 
-
+	public int findKey(String value, Map<Integer, String> dict) {
+		int key = 0;
+		for (Entry<Integer, String> e: dict.entrySet()) {
+			if (value.equals(e.getValue())) {
+				key= e.getKey();
+			}
+			
+		}
+		return key;
+	}
 	
 	
 
