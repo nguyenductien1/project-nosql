@@ -164,37 +164,38 @@ final class Main {
 		idx.setPOS(rdfHandler.POS, instanceDict.getDict());
 		idx.setOSP(rdfHandler.OSP, instanceDict.getDict());
 		
+		
 		//Imprimer les index
 		
+		
 		System.out.println("Index SPO: ");
-		for (int i=0; i< idx.getSPO().size(); i++) {
-			System.out.println(idx.getSPO().get(i).toString());
-		}
+		idx.getSPO().entrySet().forEach(entry -> {
+		    System.out.println("subject: "+entry.getKey() + " -> " + entry.getValue());
+		});
 		
 		System.out.println("Index SOP: ");
-		for (int i=0; i< idx.getSOP().size(); i++) {
-			System.out.println(idx.getSOP().get(i).toString());
-		}
+		idx.getSOP().entrySet().forEach(entry -> {
+		    System.out.println(entry.getKey() + " -> " + entry.getValue());
+		});
 		
 		System.out.println("Index PSO: ");
-		for (int i=0; i< idx.getPSO().size(); i++) {
-			System.out.println(idx.getPSO().get(i).toString());
-		}
+		idx.getPSO().entrySet().forEach(entry -> {
+		    System.out.println(entry.getKey() + " -> " + entry.getValue());
+		});
 		
 		System.out.println("Index OPS: ");
-		for (int i=0; i< idx.getOPS().size(); i++) {
-			System.out.println(idx.getOPS().get(i).toString());
-		}
+		idx.getOPS().entrySet().forEach(entry -> {
+		    System.out.println(entry.getKey() + " -> " + entry.getValue());
+		});
 		
 		System.out.println("Index POS: ");
-		for (int i=0; i< idx.getPOS().size(); i++) {
-			System.out.println(idx.getPOS().get(i).toString());
-		}
+		idx.getPOS().entrySet().forEach(entry -> {
+		    System.out.println(entry.getKey() + " -> " + entry.getValue());
+		});
 		
 		System.out.println("Index OSP: ");
-		for (int i=0; i< idx.getOSP().size(); i++) {
-			System.out.println(idx.getOSP().get(i).toString());
-		}
-		
+		idx.getOSP().entrySet().forEach(entry -> {
+		    System.out.println(entry.getKey() + " -> " + entry.getValue());
+		});
 	}
 }
