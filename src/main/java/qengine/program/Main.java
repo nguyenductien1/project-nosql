@@ -171,29 +171,59 @@ final class Main {
 		/**
 		 * SELECT ?v0 WHERE {
 								?v0 <http://purl.org/dc/terms/Location> <http://db.uwaterloo.ca/~galuc/wsdbm/City2> .
-								?v0 <http://schema.org/nationality> <http://db.uwaterloo.ca/~galuc/wsdbm/Country169> .
+								?v0 <http://schema.org/nationality> <http://db.uwaterloo.ca/~galuc/wsdbm/Country167> .
 								?v0 <http://db.uwaterloo.ca/~galuc/wsdbm/gender> <http://db.uwaterloo.ca/~galuc/wsdbm/Gender1> . }
 		 */
 		
 		
-		//-> Parton vers integer
-		int p1 = instanceDict.findKey("http://purl.org/dc/terms/Location", instanceDict.getDict());
-		int o1 = instanceDict.findKey("http://db.uwaterloo.ca/~galuc/wsdbm/City2", instanceDict.getDict());
-		int p2 = instanceDict.findKey("http://schema.org/nationality", instanceDict.getDict());
-		int o2 = instanceDict.findKey("http://db.uwaterloo.ca/~galuc/wsdbm/Country169", instanceDict.getDict());
-		int p3 = instanceDict.findKey("http://db.uwaterloo.ca/~galuc/wsdbm/gender", instanceDict.getDict());
-		int o3 = instanceDict.findKey("http://db.uwaterloo.ca/~galuc/wsdbm/Gender1", instanceDict.getDict());
+		//-> Patron vers integer
+		int p11 = instanceDict.findKey("http://purl.org/dc/terms/Location", instanceDict.getDict());
+		int o11 = instanceDict.findKey("http://db.uwaterloo.ca/~galuc/wsdbm/City2", instanceDict.getDict());
+		int p12 = instanceDict.findKey("http://schema.org/nationality", instanceDict.getDict());
+		int o12 = instanceDict.findKey("http://db.uwaterloo.ca/~galuc/wsdbm/Country167", instanceDict.getDict());
+		int p13 = instanceDict.findKey("http://db.uwaterloo.ca/~galuc/wsdbm/gender", instanceDict.getDict());
+		int o13 = instanceDict.findKey("http://db.uwaterloo.ca/~galuc/wsdbm/Gender1", instanceDict.getDict());
 		
 		
-		ArrayList <Integer> s1 = idx.getOPS().get(o1).get(p1);
-		ArrayList <Integer> s2 = idx.getOPS().get(o2).get(p2);
-		ArrayList <Integer> s3 = idx.getOPS().get(o3).get(p3);
+		ArrayList <Integer> s11 = idx.getOPS().get(o11).get(p11);
+		ArrayList <Integer> s12 = idx.getOPS().get(o12).get(p12);
+		ArrayList <Integer> s13 = idx.getOPS().get(o13).get(p13);
 		
-		System.out.println("Result for query: ");
-		ArrayList <Integer> queryResult = findCommonElement(s1, s2, s3);
-		for (int e:queryResult) {
-			System.out.println("-"+instanceDict.getDict().get(e));
+		System.out.println("Result for query 1: ");
+		ArrayList <Integer> queryResult = findCommon3Element(s11, s12, s13);
+		if (queryResult !=null) {
+			for (int e:queryResult) {
+				System.out.println("-"+instanceDict.getDict().get(e));
+			}
 		}
+		else if (queryResult == null || queryResult.size() == 0) {
+			System.out.println("Pas de résultat");
+		}
+		
+		/*
+		SELECT ?v0 WHERE {
+			?v0 <http://db.uwaterloo.ca/~galuc/wsdbm/likes> <http://db.uwaterloo.ca/~galuc/wsdbm/Product0> .
+			?v0 <http://schema.org/nationality> <http://db.uwaterloo.ca/~galuc/wsdbm/Country3> . }
+		*/
+		int p21 = instanceDict.findKey("http://db.uwaterloo.ca/~galuc/wsdbm/likes", instanceDict.getDict());
+		int o21 = instanceDict.findKey("http://db.uwaterloo.ca/~galuc/wsdbm/Product0", instanceDict.getDict());
+		int p22 = instanceDict.findKey("http://schema.org/nationality", instanceDict.getDict());
+		int o22 = instanceDict.findKey("http://db.uwaterloo.ca/~galuc/wsdbm/Country3", instanceDict.getDict());
+		
+		ArrayList <Integer> s21 = idx.getOPS().get(o21).get(p21);
+		ArrayList <Integer> s22 = idx.getOPS().get(o22).get(p22);
+				
+		System.out.println("Result for query 2: ");
+		ArrayList <Integer> queryResult2 = findCommon2Element(s21, s22);
+		if (queryResult !=null) {
+			for (int e:queryResult2) {
+				System.out.println("-"+instanceDict.getDict().get(e));
+			}
+		}
+		else if (queryResult2 == null || queryResult2.size() == 0) {
+			System.out.println("Pas de résultat");
+		}
+		
 		
 		
 		
@@ -240,30 +270,50 @@ final class Main {
 		idx.etoilePOS(instanceDict.getDict());*/
 	}
 	
-	public static ArrayList<Integer> findCommonElement(ArrayList<Integer> a, ArrayList<Integer> b, ArrayList<Integer> c){
+	public static ArrayList<Integer> findCommon3Element(ArrayList<Integer> a, ArrayList<Integer> b, ArrayList<Integer> c){
 		ArrayList<Integer> result = new ArrayList<>();
 		Set<Integer> set1 = new HashSet<Integer>();
 		Set<Integer> set2 = new HashSet<Integer>();
-		for (int e:a) {
-			set1.add(e);
-		}
-		if (b != null ) {
+		if (a != null && b !=null && c != null) {
+		
+			for (int e:a) {
+				set1.add(e);
+			}
+			
 			for (int e:b) {
 				if (set1.contains(e)) {
 					set2.add(e);
 				}
 			}
-		}
-		else {
-			set2 = set1;
-		}
-		
-		for (int e:c) {
-			if (set2.contains(e)) {
-				result.add(e);
+			
+			for (int e:c) {
+				if (set2.contains(e)) {
+					result.add(e);
+				}
 			}
+			
+			return result;
 		}
+		return null;
+	}
+	
+	public static ArrayList<Integer> findCommon2Element(ArrayList<Integer> a, ArrayList<Integer> b){
+		ArrayList<Integer> result = new ArrayList<>();
+		Set<Integer> set = new HashSet<Integer>();
+		if (a != null && b !=null) {
 		
-		return result;
+			for (int e:a) {
+				set.add(e);
+			}
+				
+			for (int e:b) {
+				if (set.contains(e)) {
+					result.add(e);
+				}
+			}
+			
+			return result;
+		}
+		return null;
 	}
 }
