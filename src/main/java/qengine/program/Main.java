@@ -176,18 +176,25 @@ final class Main {
 		 */
 		
 		
-		//-> Patron vers integer
+		// Composants des patrons vers integer
 		int p11 = instanceDict.findKey("http://purl.org/dc/terms/Location", instanceDict.getDict());
 		int o11 = instanceDict.findKey("http://db.uwaterloo.ca/~galuc/wsdbm/City2", instanceDict.getDict());
 		int p12 = instanceDict.findKey("http://schema.org/nationality", instanceDict.getDict());
-		int o12 = instanceDict.findKey("http://db.uwaterloo.ca/~galuc/wsdbm/Country167", instanceDict.getDict());
+		int o12 = instanceDict.findKey("http://db.uwaterloo.ca/~galuc/wsdbm/Country145", instanceDict.getDict());
 		int p13 = instanceDict.findKey("http://db.uwaterloo.ca/~galuc/wsdbm/gender", instanceDict.getDict());
 		int o13 = instanceDict.findKey("http://db.uwaterloo.ca/~galuc/wsdbm/Gender1", instanceDict.getDict());
 		
-		
+		// Trouver les subjects dans les partrons.
 		ArrayList <Integer> s11 = idx.getOPS().get(o11).get(p11);
 		ArrayList <Integer> s12 = idx.getOPS().get(o12).get(p12);
 		ArrayList <Integer> s13 = idx.getOPS().get(o13).get(p13);
+		
+		System.out.println("Listes des sujets s1: ");
+		System.out.println(s11);
+		System.out.println("Listes des sujets s2: ");
+		System.out.println(s12);
+		System.out.println("Listes des sujets s3: ");
+		System.out.println(s13);
 		
 		System.out.println("Result for query 1: ");
 		ArrayList <Integer> queryResult = findCommon3Element(s11, s12, s13);
@@ -199,6 +206,7 @@ final class Main {
 		else if (queryResult == null || queryResult.size() == 0) {
 			System.out.println("Pas de résultat");
 		}
+		
 		
 		/*
 		SELECT ?v0 WHERE {
