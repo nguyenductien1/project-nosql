@@ -6,8 +6,12 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import org.eclipse.rdf4j.query.algebra.Projection;
@@ -52,7 +56,7 @@ final class Main {
 	/**
 	 * Fichier contenant des données rdf
 	 */
-	static final String dataFile = workingDir + "sample_data.nt";
+	static final String dataFile = workingDir + "100k.nt";
 
 	// ========================================================================
 
@@ -62,17 +66,17 @@ final class Main {
 	public static void processAQuery(ParsedQuery query) {
 		List<StatementPattern> patterns = StatementPatternCollector.process(query.getTupleExpr());
 
-		System.out.println("first pattern : " + patterns.get(0));
+		//System.out.println("first pattern : " + patterns.get(0));
 
-		System.out.println("object of the first pattern : " + patterns.get(0).getObjectVar().getValue());
+		//System.out.println("object of the first pattern : " + patterns.get(0).getObjectVar().getValue());
 
-		System.out.println("variables to project : ");
+		//System.out.println("variables to project : ");
 
 		// Utilisation d'une classe anonyme
 		query.getTupleExpr().visit(new AbstractQueryModelVisitor<RuntimeException>() {
 
 			public void meet(Projection projection) {
-				System.out.println(projection.getProjectionElemList().getElements());
+				//System.out.println(projection.getProjectionElemList().getElements());
 			}
 		});
 	}
@@ -148,30 +152,61 @@ final class Main {
 		instanceDict.setDict(rdfHandler.dict);
 		
 		// Imprimer le dictionaire
+		/*
 		System.out.println("Dictionary: ");
 		instanceDict.getDict().entrySet().forEach(entry -> {
 		    System.out.println("key: "+entry.getKey() + " - " + "value: " + entry.getValue());
 		});
-		
-		
+		*/
 		
 		//Créer un instance de IndexManager
 		IndexManager idx = new IndexManager();
-		idx.setSPO(rdfHandler.SPO, instanceDict.getDict());
-		idx.setSOP(rdfHandler.SOP, instanceDict.getDict());
-		idx.setPSO(rdfHandler.PSO, instanceDict.getDict());
-		idx.setOPS(rdfHandler.OPS, instanceDict.getDict());
-		idx.setPOS(rdfHandler.POS, instanceDict.getDict());
-		idx.setOSP(rdfHandler.OSP, instanceDict.getDict());
+		idx.setSPO(rdfHandler.SPO);
+		idx.setSOP(rdfHandler.SOP);
+		idx.setPSO(rdfHandler.PSO);
+		idx.setPOS(rdfHandler.POS);
+		idx.setOPS(rdfHandler.OPS);
+		idx.setOSP(rdfHandler.OSP);
+
+		/**
+		 * SELECT ?v0 WHERE {
+								?v0 <http://purl.org/dc/terms/Location> <http://db.uwaterloo.ca/~galuc/wsdbm/City2> .
+								?v0 <http://schema.org/nationality> <http://db.uwaterloo.ca/~galuc/wsdbm/Country169> .
+								?v0 <http://db.uwaterloo.ca/~galuc/wsdbm/gender> <http://db.uwaterloo.ca/~galuc/wsdbm/Gender1> . }
+		 */
+		
+		
+		//-> Parton vers integer
+		int p1 = instanceDict.findKey("http://purl.org/dc/terms/Location", instanceDict.getDict());
+		int o1 = instanceDict.findKey("http://db.uwaterloo.ca/~galuc/wsdbm/City2", instanceDict.getDict());
+		int p2 = instanceDict.findKey("http://schema.org/nationality", instanceDict.getDict());
+		int o2 = instanceDict.findKey("http://db.uwaterloo.ca/~galuc/wsdbm/Country169", instanceDict.getDict());
+		int p3 = instanceDict.findKey("http://db.uwaterloo.ca/~galuc/wsdbm/gender", instanceDict.getDict());
+		int o3 = instanceDict.findKey("http://db.uwaterloo.ca/~galuc/wsdbm/Gender1", instanceDict.getDict());
+		
+		
+		ArrayList <Integer> s1 = idx.getOPS().get(o1).get(p1);
+		ArrayList <Integer> s2 = idx.getOPS().get(o2).get(p2);
+		ArrayList <Integer> s3 = idx.getOPS().get(o3).get(p3);
+		
+		System.out.println("Result for query: ");
+		ArrayList <Integer> queryResult = findCommonElement(s1, s2, s3);
+		for (int e:queryResult) {
+			System.out.println("-"+instanceDict.getDict().get(e));
+		}
+		
 		
 		
 		//Imprimer les index
 		
-		
+		/*
 		System.out.println("Index SPO: ");
 		idx.getSPO().entrySet().forEach(entry -> {
 		    System.out.println("subject: "+entry.getKey() + " -> " + entry.getValue());
 		});
+		
+		//HashSet
+		
 		
 		System.out.println("Index SOP: ");
 		idx.getSOP().entrySet().forEach(entry -> {
@@ -196,6 +231,39 @@ final class Main {
 		System.out.println("Index OSP: ");
 		idx.getOSP().entrySet().forEach(entry -> {
 		    System.out.println(entry.getKey() + " -> " + entry.getValue());
-		});
+		}); */
+		
+		//Imprimer les query result
+		/*System.out.println("SPO QUERY: SELECT ?x WHERE {?x p1 o1 . ?x p2 o2 . ?x p3 o3");
+		idx.etoileSPO(instanceDict.getDict());
+		System.out.println("POS QUERY: SELECT ?x WHERE {?x o1 s1 . ?x o2 s2 . ?x o3 s3}");
+		idx.etoilePOS(instanceDict.getDict());*/
+	}
+	
+	public static ArrayList<Integer> findCommonElement(ArrayList<Integer> a, ArrayList<Integer> b, ArrayList<Integer> c){
+		ArrayList<Integer> result = new ArrayList<>();
+		Set<Integer> set1 = new HashSet<Integer>();
+		Set<Integer> set2 = new HashSet<Integer>();
+		for (int e:a) {
+			set1.add(e);
+		}
+		if (b != null ) {
+			for (int e:b) {
+				if (set1.contains(e)) {
+					set2.add(e);
+				}
+			}
+		}
+		else {
+			set2 = set1;
+		}
+		
+		for (int e:c) {
+			if (set2.contains(e)) {
+				result.add(e);
+			}
+		}
+		
+		return result;
 	}
 }

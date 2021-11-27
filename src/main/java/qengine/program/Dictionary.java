@@ -2,6 +2,7 @@ package qengine.program;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 
 public class Dictionary {
@@ -23,5 +24,16 @@ public class Dictionary {
 		this.dict = dict;
 	}
 	
+	public int findKey(String value, Map<Integer, String> dict) {
+		int key = 0;
+		for (Entry<Integer, String> e: dict.entrySet()) {
+			if (value.equals(e.getValue())) {
+				key= e.getKey();
+			}
+			
+		}
+		return key;
+		
+	}
 	
 }
